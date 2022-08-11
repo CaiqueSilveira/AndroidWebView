@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 public class MainActivity extends AppCompatActivity {
     private WebView myWebView;
     private ProgressBar progressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,32 +22,43 @@ public class MainActivity extends AppCompatActivity {
         myWebView = findViewById(R.id.webview);
         progressBar = findViewById(R.id.progressBar);
         WebView_Client webViewClient = new WebView_Client(this);
+        myWebView.getSettings().setBuiltInZoomControls(false);
+        myWebView.getSettings().setSupportZoom(false);
+        myWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+        myWebView.getSettings().setAllowFileAccess(true);
+        myWebView.getSettings().setDomStorageEnabled(true);
         myWebView.setWebViewClient(webViewClient);
-        myWebView.loadUrl("https://google.com.br");
+        myWebView.loadUrl("http://www.google.com/");
         WebSettings webSettings = myWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         myWebView.setWebViewClient(new WebViewClient() {
-            @Override public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+            @Override
+            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
                 myWebView.loadUrl("file:///android_asset/www/index.html");
-            } });
+            }
+        });
     }
+
     public class WebViewClient extends android.webkit.WebViewClient {
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
         }
+
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             view.loadUrl(url);
             return true;
 
         }
+
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
             progressBar.setVisibility(View.GONE);
         }
     }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if ((keyCode == KeyEvent.KEYCODE_BACK) && myWebView.canGoBack()) {
